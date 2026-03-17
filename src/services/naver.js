@@ -30,7 +30,7 @@ export async function searchWithVerification(menuKeywords, { shuffle = true } = 
   const ordered = shuffle ? [...menuKeywords].sort(() => Math.random() - 0.5) : menuKeywords
   for (const keyword of ordered) {
     const results = await searchRestaurants(keyword)
-    if (results.length >= 2) {
+    if (results.length >= 1) {
       return { keyword, results, isFallback: false }
     }
   }
