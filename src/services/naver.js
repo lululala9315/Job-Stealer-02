@@ -56,7 +56,7 @@ export async function searchRestaurants(keyword, { menuKeyword = keyword } = {})
     query: `문정동 ${keyword}`,
     menuKeyword, // 빈 문자열이면 worker에서 필터 미적용
     display: '20',
-    sort: 'comment',
+    sort: 'random',
     x: MUNJEONG_LNG,
     y: MUNJEONG_LAT,
   })

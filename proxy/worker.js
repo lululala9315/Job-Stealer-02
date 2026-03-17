@@ -118,13 +118,21 @@ export default {
  *  1점: 카테고리에 키워드 포함 (관련 업종)
  *  0점: 해당 없음
  */
+// 유사 키워드 매핑 — 카페 검색 시 커피전문점도 포함
+const KEYWORD_ALIASES = {
+  카페: ['카페', '커피', '아메리카노', '카페라테'],
+  커피: ['커피', '카페', '아메리카노', '카페라테'],
+  디저트: ['디저트', '베이커리', '케이크', '빵'],
+  빵: ['빵', '베이커리', '디저트'],
+}
 export function scoreRelevance(item, menuKeyword) {
   if (!menuKeyword) return 0
   const keyword = menuKeyword.replace(/\s/g, '').toLowerCase()
+  const aliases = KEYWORD_ALIASES[keyword] ?? [keyword]
   const title = item.title.replace(/<[^>]*>/g, '').replace(/\s/g, '').toLowerCase()
   const category = (item.category || '').replace(/\s/g, '').toLowerCase()
-  if (title.includes(keyword)) return 2
-  if (category.includes(keyword)) return 1
+  if (aliases.some(kw => title.includes(kw))) return 2
+  if (aliases.some(kw => category.includes(kw))) return 1
   return 0
 }
 
@@ -177,14 +185,26 @@ async function handleSearch(request, env, origin, url) {
       const addr = item.address || ''
       return road.includes(keyword) || addr.includes(keyword)
     }
-    // 스타벅스 등 프랜차이즈 체인 제외
     const EXCLUDED_CHAINS = ['스타벅스']
-    const isExcluded = (item) => EXCLUDED_CHAINS.some(chain => item.title.replace(/<[^>]*>/g, '').includes(chain))
+    const EXCLUDED_CATEGORIES = ['키즈카페']
+    const isExcluded = (item) => {
+      const title = item.title.replace(/<[^>]*>/g, '')
+      const category = item.category || ''
+      return EXCLUDED_CHAINS.some(chain => title.includes(chain))
+        || EXCLUDED_CATEGORIES.some(cat => category.includes(cat))
+    }
 
+    // 문정역 인근 주요 랜드마크/도로명도 포함 — 가든파이브, 충민로는 문정동 주소로 등록 안 되는 경우 多
+    const isNearMunjeong = (item) => {
+      const road = item.roadAddress || ''
+      const addr = item.address || ''
+      const combined = road + addr
+      return combined.includes('문정') || combined.includes('가든파이브') || combined.includes('충민로')
+    }
     const byDong = scored.filter(s => (hasMunjeong(s.item, '문정동') || hasMunjeong(s.item, '문정로')) && !isExcluded(s.item))
     const candidates = byDong.length > 0
       ? byDong
-      : scored.filter(s => hasMunjeong(s.item, '문정') && !isExcluded(s.item))
+      : scored.filter(s => isNearMunjeong(s.item) && !isExcluded(s.item))
 
     if (candidates.length === 0) {
       return jsonResponse({ items: [] }, 200, origin)
