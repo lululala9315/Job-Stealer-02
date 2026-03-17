@@ -88,9 +88,9 @@ export const MENU_IMAGE_MAP = {
 
 export const EMOTION_MENU_KEYWORDS = {
   anger: ['피자', '떡볶이', '짬뽕'],
-  depression: ['카페', '빵', '케이크'],
+  depression: ['카페', '디저트', '커피'],
   burnout: ['순대국밥', '뼈해장국', '육개장'],
   joy: ['초밥', '파스타', '스테이크'],
   anxiety: ['햄버거', '칼국수', '설렁탕'],
-  sadness: ['카페', '치킨', '케이크'],
+  sadness: ['카페', '치킨', '커피'],
 }
