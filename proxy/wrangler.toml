@@ -1,0 +1,10 @@
+name = "bingssyang-proxy"
+main = "worker.js"
+compatibility_date = "2024-01-01"
+
+[vars]
+NAVER_CLIENT_ID = "oiUCM_3YeGmwm_Gbc1ZH"
+NAVER_CLIENT_SECRET = "tKtAL1iBVr"
+
+[ai]
+binding = "AI"
