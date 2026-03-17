@@ -141,8 +141,7 @@ textarea:focus {
 
 @font-face {
   font-family: 'MemomentKkukkukk';
-  src: url('/MemomentKkukkukk.otf') format('opentype'),
-    url('/MemomentKkukkukk.ttf') format('truetype');
+  src: url('/MemomentKkukkukk.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
   font-display: block;
